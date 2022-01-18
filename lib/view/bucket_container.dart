@@ -22,14 +22,29 @@ class _MyHomePageState extends State<BucketContainer> {
   bool button_is_pressed = false;
   bool loop_active = false;
 
-  int min_delay = 80;
-  int initial_delay = 300;
+  int min_delay = 10;
+  int initial_delay = 100;
   int delay_steps = 5;
   bool holding = false;
 
   @override
   void initState() {
     super.initState();
+  }
+
+  update_bucket(bool add_volume) {
+    int new_value = widget.bucket.volume;
+
+    if (add_volume) {
+      new_value++;
+    } else {
+      new_value--;
+    }
+
+    widget.update_bucket_function(
+      widget.bucket_index,
+      new_value,
+    );
   }
 
   start_holding(bool add_volume) async {
@@ -43,7 +58,7 @@ class _MyHomePageState extends State<BucketContainer> {
     var delay = initial_delay.toDouble();
 
     while (holding) {
-      widget.update_bucket_function(widget.bucket_index, add_volume);
+      update_bucket(add_volume);
       await Future.delayed(Duration(milliseconds: delay.round()));
       if (delay > min_delay) delay -= step;
     }
@@ -57,7 +72,7 @@ class _MyHomePageState extends State<BucketContainer> {
   Widget build(BuildContext context) {
     double screen_height = MediaQuery.of(context).size.height;
     double screen_width = MediaQuery.of(context).size.width;
-    double bucket_border_radius_1 = (screen_width / 10);
+    double bucket_border_radius_1 = (screen_width / 20);
     double bucket_border_radius_2 = (screen_width / 3);
 
     var shape = CircleBorder();
@@ -111,10 +126,11 @@ class _MyHomePageState extends State<BucketContainer> {
                   ),
                 ),
                 Container(
-                  padding: EdgeInsets.only(top: 20),
+                  padding: EdgeInsets.only(top: 30),
                   alignment: Alignment.center,
                   child: Text(
                     widget.bucket.volume.toString(),
+                    textAlign: TextAlign.center,
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 16,
@@ -134,6 +150,7 @@ class _MyHomePageState extends State<BucketContainer> {
                   InkWell(
                     child: Container(
                       margin: const EdgeInsets.all(5.0),
+                      padding: const EdgeInsets.all(10.0),
                       decoration: BoxDecoration(
                         color: Colors.blue,
                         borderRadius: BorderRadius.circular(15),
@@ -151,6 +168,7 @@ class _MyHomePageState extends State<BucketContainer> {
                   InkWell(
                     child: Container(
                       margin: const EdgeInsets.all(5.0),
+                      padding: const EdgeInsets.all(10.0),
                       decoration: BoxDecoration(
                         color: Colors.blue,
                         borderRadius: BorderRadius.circular(15),
