@@ -15,16 +15,16 @@ class BucketContainer extends StatefulWidget {
   final String title;
 
   @override
-  State<BucketContainer> createState() => _MyHomePageState();
+  State<BucketContainer> createState() => _BucketContainerState();
 }
 
-class _MyHomePageState extends State<BucketContainer> {
+class _BucketContainerState extends State<BucketContainer> {
   bool button_is_pressed = false;
   bool loop_active = false;
 
   int min_delay = 10;
-  int initial_delay = 100;
-  int delay_steps = 5;
+  int initial_delay = 200;
+  int delay_steps = 10;
   bool holding = false;
 
   @override
@@ -119,7 +119,7 @@ class _MyHomePageState extends State<BucketContainer> {
                 Container(
                   margin: const EdgeInsets.all(10),
                   height: screen_width / 10,
-                  width: screen_width / 4.5,
+                  width: screen_width / 4,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(bucket_border_radius_2),
                     color: Colors.blue,

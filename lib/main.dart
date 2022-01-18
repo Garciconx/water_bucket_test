@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:water_bucket_test/model/bucket.dart';
 import 'package:water_bucket_test/view/bucket_container.dart';
 
@@ -135,16 +134,24 @@ class _MyHomePageState extends State<MyHomePage> {
 
     List<Bucket> buckets = [];
 
-    if (strategy_index == 0) {
-      buckets = await strategy_1(
-        smaller_bucket: smaller_bucket,
-        bigger_bucket: bigger_bucket,
-      );
+    if (smaller_bucket.volume == bucket_z.volume) {
+      smaller_bucket.fill();
+      buckets = [smaller_bucket, bigger_bucket];
+    } else if (bigger_bucket.volume == bucket_z.volume) {
+      bigger_bucket.fill();
+      buckets = [smaller_bucket, bigger_bucket];
     } else {
-      buckets = await strategy_2(
-        smaller_bucket: smaller_bucket,
-        bigger_bucket: bigger_bucket,
-      );
+      if (strategy_index == 0) {
+        buckets = await strategy_1(
+          smaller_bucket: smaller_bucket,
+          bigger_bucket: bigger_bucket,
+        );
+      } else {
+        buckets = await strategy_2(
+          smaller_bucket: smaller_bucket,
+          bigger_bucket: bigger_bucket,
+        );
+      }
     }
 
     if (bucket_x.volume < bucket_y.volume) {
@@ -159,8 +166,6 @@ class _MyHomePageState extends State<MyHomePage> {
         "|Bucket X: ${bucket_x.value} | Bucket Y: ${bucket_y.value}|\n";
 
     operations.add(new_operation);
-    //operations.add("-----------------------------------------\n");
-
     return await "result";
   }
 
