@@ -37,24 +37,32 @@ class _MyHomePageState extends State<MyHomePage> {
   int operation_cycles = 0;
   bool no_solution = false;
 
+  int bucket_volume_upper_limit = 100;
+
   update_bucket(int bucket_index, bool add_volume) {
     clear_values();
 
     if (add_volume) {
       if (bucket_index == 0) {
-        bucket_x.volume = (bucket_x.volume + 1).clamp(0, 20);
+        bucket_x.volume =
+            (bucket_x.volume + 1).clamp(0, bucket_volume_upper_limit);
       } else if (bucket_index == 1) {
-        bucket_y.volume = (bucket_y.volume + 1).clamp(0, 20);
+        bucket_y.volume =
+            (bucket_y.volume + 1).clamp(0, bucket_volume_upper_limit);
       } else if (bucket_index == 2) {
-        bucket_z.volume = (bucket_z.volume + 1).clamp(0, 20);
+        bucket_z.volume =
+            (bucket_z.volume + 1).clamp(0, bucket_volume_upper_limit);
       }
     } else {
       if (bucket_index == 0) {
-        bucket_x.volume = (bucket_x.volume - 1).clamp(0, 20);
+        bucket_x.volume =
+            (bucket_x.volume - 1).clamp(0, bucket_volume_upper_limit);
       } else if (bucket_index == 1) {
-        bucket_y.volume = (bucket_y.volume - 1).clamp(0, 20);
+        bucket_y.volume =
+            (bucket_y.volume - 1).clamp(0, bucket_volume_upper_limit);
       } else if (bucket_index == 2) {
-        bucket_z.volume = (bucket_z.volume - 1).clamp(0, 20);
+        bucket_z.volume =
+            (bucket_z.volume - 1).clamp(0, bucket_volume_upper_limit);
       }
     }
 
@@ -78,7 +86,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   calculate_operations() async {
     if (bucket_x.volume != 0 && bucket_y.volume != 0 && bucket_z.volume != 0) {
-      if (operation_cycles < 31) {
+      if (operation_cycles < bucket_volume_upper_limit * 3) {
         operation_cycles++;
 
         if (bucket_x.volume < bucket_z.volume &&
@@ -221,7 +229,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       ),
                       Text(
                         operations.join(),
-                        maxLines: 24,
+                        maxLines: bucket_volume_upper_limit * 3,
                       )
                     ],
                   )

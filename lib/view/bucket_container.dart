@@ -19,9 +19,38 @@ class BucketContainer extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<BucketContainer> {
+  bool button_is_pressed = false;
+  bool loop_active = false;
+
+  int min_delay = 80;
+  int initial_delay = 300;
+  int delay_steps = 5;
+  bool holding = false;
+
   @override
   void initState() {
     super.initState();
+  }
+
+  start_holding(bool add_volume) async {
+    // Make sure this isn't called more than once for
+    // whatever reason.
+    if (holding) return;
+    holding = true;
+
+    // Calculate the delay decrease per step
+    final step = (initial_delay - min_delay).toDouble() / delay_steps;
+    var delay = initial_delay.toDouble();
+
+    while (holding) {
+      widget.update_bucket_function(widget.bucket_index, add_volume);
+      await Future.delayed(Duration(milliseconds: delay.round()));
+      if (delay > min_delay) delay -= step;
+    }
+  }
+
+  stop_holding() {
+    holding = false;
   }
 
   @override
@@ -30,6 +59,8 @@ class _MyHomePageState extends State<BucketContainer> {
     double screen_width = MediaQuery.of(context).size.width;
     double bucket_border_radius_1 = (screen_width / 10);
     double bucket_border_radius_2 = (screen_width / 3);
+
+    var shape = CircleBorder();
 
     return Container(
       margin: const EdgeInsets.all(15.0),
@@ -100,39 +131,39 @@ class _MyHomePageState extends State<BucketContainer> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Container(
-                    margin: const EdgeInsets.all(5.0),
-                    decoration: BoxDecoration(
-                      color: Colors.blue,
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                    child: IconButton(
-                      icon: Icon(
+                  InkWell(
+                    child: Container(
+                      margin: const EdgeInsets.all(5.0),
+                      decoration: BoxDecoration(
+                        color: Colors.blue,
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                      child: Icon(
                         Icons.remove,
                         color: Colors.white,
                       ),
-                      onPressed: () {
-                        widget.update_bucket_function(
-                            widget.bucket_index, false);
-                      },
                     ),
+                    onTap: () => stop_holding(),
+                    onTapDown: (_) => start_holding(false),
+                    onTapCancel: () => stop_holding(),
+                    customBorder: shape,
                   ),
-                  Container(
-                    margin: const EdgeInsets.all(5.0),
-                    decoration: BoxDecoration(
-                      color: Colors.blue,
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                    child: IconButton(
-                      icon: Icon(
+                  InkWell(
+                    child: Container(
+                      margin: const EdgeInsets.all(5.0),
+                      decoration: BoxDecoration(
+                        color: Colors.blue,
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                      child: Icon(
                         Icons.add,
                         color: Colors.white,
                       ),
-                      onPressed: () {
-                        widget.update_bucket_function(
-                            widget.bucket_index, true);
-                      },
                     ),
+                    onTap: () => stop_holding(),
+                    onTapDown: (_) => start_holding(true),
+                    onTapCancel: () => stop_holding(),
+                    customBorder: shape,
                   ),
                 ],
               ),
